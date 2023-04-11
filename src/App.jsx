@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import {AiFillPlusCircle} from "react-icons/ai"
+import Todo from "./components/Todo";
+import { nanoid } from "nanoid";
+import { useDispatch, useSelector } from "react-redux";
+import { addToDo } from "./features/todos";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App =()=> {
+  const [inputValue, setInputValue] = useState("");
+  const dispatch = useDispatch()
+  const todos = useSelector((state)=> state.todo)
 
+  console.log(todos);
+  const handleInput =(event) => {
+    setInputValue(prevInput=> (prevInput, event.target.value) )
+  }
+  
+
+  const handleEnter = (event) => {
+    if(event.key === "Enter"){
+      addTodos()
+    }
+  }
+
+    
+  const addTodos = () =>{
+    if(inputValue.trim() === ""){
+      return
+    }  
+    
+    dispatch(addToDo({id : nanoid(), inputValue, complete : false}))
+    setInputValue("")
+
+    // setInputValue("")
+    // return(
+    //   todo.unshift(<Todo id={nanoid()} handleDel={handleDelete} complete={false} check={toggleCompleted}>{inputValue}</Todo>)
+    // )
+  }
+  
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex justify-center flex-col items-center mt-32">
+      <h1 className="text-[10rem] font-bold text-gray-200">todos</h1>
+      <div className="w-[32rem] h-10 rounded-full shadow-lg shadow-gray-300 items-center px-5 flex justify-between">
+        <input type="text" onChange={handleInput} onKeyDown={handleEnter} placeholder="Add todo..." value={inputValue} className="w-96 h-full outline-none placeholder:text-black" />
+        <AiFillPlusCircle className="text-green-700 text-2xl cursor-pointer" onClick={()=>addTodos()} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="">
+        {todos.map((item)=>(
+          <Todo key={item.id} id={item.id} complete={item.complete}>{item.inputValue}</Todo>
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
