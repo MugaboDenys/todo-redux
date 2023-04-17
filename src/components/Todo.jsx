@@ -19,11 +19,7 @@ const Todo = ({children, id, complete}) => {
         handleEdit()
     }
     
-    const handleEnter = (event) =>{
-        if(event.key=== "Enter"){
-            handleUpdate()
-        }
-    }
+    const handleEnter = (event) => event.key === "Enter" && handleUpdate()
     
     return ( 
         <div className="flex justify-between group w-[32rem] py-2 pl-2 mt-5 border-b-2">
